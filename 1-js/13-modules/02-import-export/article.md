@@ -1,23 +1,23 @@
-# Export and Import
+# Експорт та імпорт
 
-Export and import directives have several syntax variants.
+Директиви експорт та імпорт мають декілька варіантів синтаксису.
 
-In the previous article we saw a simple use, now let's explore more examples.
+В попередній статті ми вже бачили приклад простого використання, тому давайте розглянемо ще декілька прикладів.
 
-## Export before declarations
+## Експорт перед оголошенням
 
-We can label any declaration as exported by placing `export` before it, be it a variable, function or a class.
+Будь-яке оголошення змінної, функції чи класу можна позначати попереду оператором `export`.
 
-For instance, here all exports are valid:
+Наприклад, всі наступні експорти валідні:
 
 ```js
-// export an array
-*!*export*/!* let months = ['Jan', 'Feb', 'Mar','Apr', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// експорт масиву
+*!*export*/!* let months = ['Січ', 'Лют', 'Бер','Квіт', 'Серп', 'Вер', 'Жов', 'Лист', 'Груд'];
 
-// export a constant
+// експорт константи
 *!*export*/!* const MODULES_BECAME_STANDARD_YEAR = 2015;
 
-// export a class
+// експорт класу
 *!*export*/!* class User {
   constructor(name) {
     this.name = name;
@@ -25,47 +25,47 @@ For instance, here all exports are valid:
 }
 ```
 
-````smart header="No semicolons after export class/function"
-Please note that `export` before a class or a function does not make it a [function expression](info:function-expressions). It's still a function declaration, albeit exported.
+````smart header="Не потрібно ставити крапку з комою після експорту класу чи функції"
+Зверніть увагу, `export` перед класом чи функцією не перетворює її в [функціональний вираз](info:function-expressions). Це все ще оголошення функції, хоч і експортованої.
 
-Most JavaScript style guides don't recommend semicolons after function and class declarations.
+Більшість JavaScript стилів коду не рекомендують ставити крапку з комою після оголошення функції та класу.
 
-That's why there's no need for a semicolon at the end of `export class` and `export function`:
+Тому не потрібно додавати крапку з комою в кінці `export class` та `export function`:
 
 ```js
 export function sayHi(user) {
-  alert(`Hello, ${user}!`);
-} *!* // no ; at the end */!*
+  alert(`Привіт, ${user}!`);
+} *!* // знак ; відсутній вкінці */!*
 ```
 
 ````
 
-## Export apart from declarations
+## Експорт поза оголошенням
 
-Also, we can put `export` separately.
+Також `export` можна використовувати окремо.
 
-Here we first declare, and then export:
+В прикладі ми спочатку оголошуємо функцію, а потім експортуємо:
 
-```js  
+```js
 // 📁 say.js
 function sayHi(user) {
-  alert(`Hello, ${user}!`);
+  alert(`Привіт, ${user}!`);
 }
 
 function sayBye(user) {
-  alert(`Bye, ${user}!`);
+  alert(`Бувай, ${user}!`);
 }
 
 *!*
-export {sayHi, sayBye}; // a list of exported variables
+export {sayHi, sayBye}; // список експортованих змінних
 */!*
 ```
 
-...Or, technically we could put `export` above functions as well.
+...Чи, технічно, ми можемо використати `export` вище оголошення функції.
 
-## Import *
+## Імпорт *
 
-Usually, we put a list of what to import in curly braces `import {...}`, like this:
+Зазвичай, список того, що потрібно імпортувати розташовують у фігурні дужки `import {...}`, як у прикладі:
 
 ```js
 // 📁 main.js
@@ -73,11 +73,12 @@ Usually, we put a list of what to import in curly braces `import {...}`, like th
 import {sayHi, sayBye} from './say.js';
 */!*
 
-sayHi('John'); // Hello, John!
-sayBye('John'); // Bye, John!
+sayHi('John'); // Привіт, Іван!
+sayBye('John'); // Бувай, Іван!
 ```
 
 But if there's a lot to import, we can import everything as an object using `import * as <obj>`, for instance:
+Якщо потрібно імпортувати дуже багато сутностей, ми можемо імпортувати все, як об'єкт з використанням `import * as <obj>`, наприклад:
 
 ```js
 // 📁 main.js
@@ -85,17 +86,17 @@ But if there's a lot to import, we can import everything as an object using `imp
 import * as say from './say.js';
 */!*
 
-say.sayHi('John');
-say.sayBye('John');
+say.sayHi('Іван');
+say.sayBye('Іван');
 ```
 
-At first sight, "import everything" seems such a cool thing, short to write, why should we ever explicitly list what we need to import?
+З першого погляду, "імпортувати все" виглядає цікавим та зручним у використанні, тоді навіщо нам явно виписувати список того, що потрібно імпортувати?
 
-Well, there are few reasons.
+На це є декілька причин.
 
-1. Modern build tools ([webpack](http://webpack.github.io) and others) bundle modules together and optimize them to speedup loading and remove unused stuff.
+1. Сучасні інструменти збирання ([webpack](http://webpack.github.io) та інші) об'єднують модулі разом, оптимізують їх для пришвидшення завантаження та видаляють невикористані частини.
 
-    Let's say, we added a 3rd-party library `say.js` to our project with many functions:
+    Скажімо, ми додали сторонню бібліотеку, з багатьма функціями, `say.js` до нашого проекту:
     ```js
     // 📁 say.js
     export function sayHi() { ... }
@@ -103,15 +104,15 @@ Well, there are few reasons.
     export function becomeSilent() { ... }
     ```
 
-    Now if we only use one of `say.js` functions in our project:
+    Припустимо, ми використовуємо тільки одну функцію з `say.js` в нашому проекті:
     ```js
     // 📁 main.js
     import {sayHi} from './say.js';
     ```
-    ...Then the optimizer will see that and remove the other functions from the bundled code, thus making the build smaller. That is called "tree-shaking".
+    ...Тоді оптимізатор побачить це та видалить інші функції із об'єднаного коду, що робить зібраний проект меншим. Так званий "tree-shaking".
 
-2. Explicitly listing what to import gives shorter names: `sayHi()` instead of `say.sayHi()`.
-3. Explicit list of imports gives better overview of the code structure: what is used and where. It makes code support and refactoring easier.
+2. Явний список того, що потрібно імпортувати дає коротші імена: `sayHi()` замість `say.sayHi()`.
+3. Явний список того, що потрібно імпортувати дає краще розуміння структури коду: що використано та в якому місці. Також дозволяє підтримувати та рефакторити код легше.
 
 ## Import "as"
 
@@ -224,7 +225,7 @@ Without `default`, such an export would give an error:
 export class { // Error! (non-default export needs a name)
   constructor() {}
 }
-```     
+```
 
 ### The "default" name
 
@@ -326,7 +327,7 @@ Imagine, we're writing a "package": a folder with a lot of modules, with some of
 The file structure could be like this:
 ```
 auth/
-    index.js  
+    index.js
     user.js
     helpers.js
     tests/
@@ -372,7 +373,7 @@ The syntax `export ... from ...` is just a shorter notation for such import-expo
 
 ```js
 // 📁 auth/index.js
-// re-export login/logout 
+// re-export login/logout
 export {login, logout} from './helpers.js';
 
 // re-export the default export as User
@@ -380,7 +381,7 @@ export {default as User} from './user.js';
 ...
 ```
 
-The notable difference of `export ... from` compared to `import/export` is that re-exported modules aren't available in the current file. So inside the above example of `auth/index.js` we can't use re-exported `login/logout` functions. 
+The notable difference of `export ... from` compared to `import/export` is that re-exported modules aren't available in the current file. So inside the above example of `auth/index.js` we can't use re-exported `login/logout` functions.
 
 ### Re-exporting the default export
 
@@ -399,7 +400,7 @@ We can come across two problems with it:
 
 1. `export User from './user.js'` won't work. That would lead to a syntax error.
 
-    To re-export the default export, we have to write `export {default as User}`, as in the example above.    
+    To re-export the default export, we have to write `export {default as User}`, as in the example above.
 
 2. `export * from './user.js'` re-exports only named exports, but ignores the default one.
 
@@ -430,7 +431,7 @@ Import:
 
 - Importing named exports:
   - `import {x [as y], ...} from "module"`
-- Importing the default export:  
+- Importing the default export:
   - `import x from "module"`
   - `import {default as x} from "module"`
 - Import all:
