@@ -73,8 +73,8 @@ export {sayHi, sayBye}; // список експортованих змінни�
 import {sayHi, sayBye} from './say.js';
 */!*
 
-sayHi('John'); // Привіт, Іван!
-sayBye('John'); // Бувай, Іван!
+sayHi('Іван'); // Привіт, Іван!
+sayBye('Іван'); // Бувай, Іван!
 ```
 
 But if there's a lot to import, we can import everything as an object using `import * as <obj>`, for instance:
@@ -114,11 +114,11 @@ say.sayBye('Іван');
 2. Явний список того, що потрібно імпортувати дає коротші імена: `sayHi()` замість `say.sayHi()`.
 3. Явний список того, що потрібно імпортувати дає краще розуміння структури коду: що використано та в якому місці. Також дозволяє підтримувати та рефакторити код легше.
 
-## Import "as"
+## Імпорт "as"
 
-We can also use `as` to import under different names.
+Для імпорту під іншим іменем можна використовувати `as`.
 
-For instance, let's import `sayHi` into the local variable `hi` for brevity, and import `sayBye` as `bye`:
+Наприклад, для спрощення імпортуймо `sayHi` в локальну змінну `hi` та `sayBye` як `bye`:
 
 ```js
 // 📁 main.js
@@ -126,15 +126,15 @@ For instance, let's import `sayHi` into the local variable `hi` for brevity, and
 import {sayHi as hi, sayBye as bye} from './say.js';
 */!*
 
-hi('John'); // Hello, John!
-bye('John'); // Bye, John!
+hi('Іван'); // Привіт, Іван!
+bye('Іван'); // Бувай, Іван!
 ```
 
-## Export "as"
+## Експорт "as"
 
-The similar syntax exists for `export`.
+Подібний синтаксис існує і для `export`.
 
-Let's export functions as `hi` and `bye`:
+Експортуймо функцію як `hi` та `bye`:
 
 ```js
 // 📁 say.js
@@ -142,87 +142,87 @@ Let's export functions as `hi` and `bye`:
 export {sayHi as hi, sayBye as bye};
 ```
 
-Now `hi` and `bye` are official names for outsiders, to be used in imports:
+Тепер `hi` та `bye` будуть використовуватися зовнішніми модулями при імпорті:
 
 ```js
 // 📁 main.js
 import * as say from './say.js';
 
-say.*!*hi*/!*('John'); // Hello, John!
-say.*!*bye*/!*('John'); // Bye, John!
+say.*!*hi*/!*('Іван'); // Привіт, Іван!
+say.*!*bye*/!*('Іван'); // Бувай, Іван!
 ```
 
-## Export default
+## Експорт за замовчуванням
 
-In practice, there are mainly two kinds of modules.
+На практиці існує два головних типи модулів.
 
-1. Modules that contain a library, pack of functions, like `say.js` above.
-2. Modules that declare a single entity, e.g. a module `user.js` exports only `class User`.
+1. Модулі, що містять бібліотеку -- набір функцій, як `say.js` вище.
+2. Модулі, що визначають єдину сутність, тобто модуль `user.js` експортує тільки `class User`.
 
-Mostly, the second approach is preferred, so that every "thing" resides in its own module.
+Переважно, надавати перевагу потрібно другому підходу, таким чином усі "сутності" знаходяться у власних модулях.
 
-Naturally, that requires a lot of files, as everything wants its own module, but that's not a problem at all. Actually, code navigation becomes easier if files are well-named and structured into folders.
+Природно, що це вимагає великої кількості файлів, щоб усе мало власні модулі, але це зовсім не проблема. Насправді, навігація в коді полегшується, якщо всі файли мають вдалу назву та структуровані в теках.
 
-Modules provide a special `export default` ("the default export") syntax to make the "one thing per module" way look better.
+Модулі використовують спеціальний синтаксис `export default` ("експорт за замовчуванням") для створення єдиності сутності та полегшення доступності.
 
-Put `export default` before the entity to export:
+Якщо сутність потрібно експортувати -- попереду потрібно поставити `export default`:
 
 ```js
 // 📁 user.js
-export *!*default*/!* class User { // just add "default"
+export *!*default*/!* class User { // потрібно додати лише "default"
   constructor(name) {
     this.name = name;
   }
 }
 ```
 
-There may be only one `export default` per file.
+В кожному файлі може бути тільки одне використання `export default`.
 
-...And then import it without curly braces:
+...А потім потрібно виконати імпорт без фігурних дужок:
 
 ```js
 // 📁 main.js
-import *!*User*/!* from './user.js'; // not {User}, just User
+import *!*User*/!* from './user.js'; // не {User}, а просто User
 
 new User('John');
 ```
 
-Imports without curly braces look nicer. A common mistake when starting to use modules is to forget curly braces at all. So, remember, `import` needs curly braces for named exports and doesn't need them for the default one.
+Імпорти без фігурних дужок виглядають краще. Коли починають використовувати модулі, поширеною помилкою є невикористання фігурних дуже взагалі. Отже, `import` потребує фігурних дуже для іменованих імпортів та не потребує, якщо це імпорт за замовчуванням.
 
-| Named export | Default export |
+| Іменований експорт | Експорт за замовчуванням |
 |--------------|----------------|
 | `export class User {...}` | `export default class User {...}` |
 | `import {User} from ...` | `import User from ...`|
 
-Technically, we may have both default and named exports in a single module, but in practice people usually don't mix them. A module has either named exports or the default one.
+Технічно, ми можемо використовувати іменовані експорти та за замовчуванням в одному модулі, але, на практиці, їх не прийнято змішувати. Модулі мають або іменований експорт, або за замовчуванням.
 
-As there may be at most one default export per file, the exported entity may have no name.
+Оскільки, тільки одна сутність може бути експортованою за замовчування, вона може не мати імені.
 
-For instance, these are all perfectly valid default exports:
+В прикладі використано правильні експорти за замовчування:
 
 ```js
-export default class { // no class name
+export default class { // відсутнє ім'я класу
   constructor() { ... }
 }
 ```
 
 ```js
-export default function(user) { // no function name
-  alert(`Hello, ${user}!`);
+export default function(user) { // відсутнє ім'я функції
+  alert(`Привіт, ${user}!`);
 }
 ```
 
 ```js
-// export a single value, without making a variable
+// експортовано єдину змінну без оголошення
 export default ['Jan', 'Feb', 'Mar','Apr', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 ```
 
-Not giving a name is fine, because there is only one `export default` per file, so `import` without curly braces knows what to import.
+Відсутність імені є абсолютно нормальним, бо може бути тільки одне використання `export default` у файлі. Таким чином `import` без фігурних дужок знає, що імпортувати.
 
-Without `default`, such an export would give an error:
+Такий експорт без `default` згенерує помилку:
 
 ```js
-export class { // Error! (non-default export needs a name)
+export class { // Помилка! (експорт за замовчування потребує імені)
   constructor() {}
 }
 ```
