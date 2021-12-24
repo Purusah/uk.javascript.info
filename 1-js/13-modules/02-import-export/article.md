@@ -227,22 +227,22 @@ export class { // Помилка! (експорт за замовчування 
 }
 ```
 
-### The "default" name
+### Ім'я "default"
 
-In some situations the `default` keyword is used to reference the default export.
+В деяких ситуаціях ключове слово `default` використовують для позначення імпорту за замовчування.
 
-For example, to export a function separately from its definition:
+Наприклад для експорту функції окремо від її оголошення:
 
 ```js
 function sayHi(user) {
-  alert(`Hello, ${user}!`);
+  alert(`Привіт, ${user}!`);
 }
 
-// same as if we added "export default" before the function
+// те ж саме, якби ми додали "export default" перед оголошенням функції
 export {sayHi as default};
 ```
 
-Or, another situation, let's say a module `user.js` exports one main "default" thing, and a few named ones (rarely the case, but it happens):
+Чи, в іншій ситуації, скажімо модуль `user.js` експортує єдину "головну" сутність та ще декілька іменованих (рідко, але таке трапляється):
 
 ```js
 // 📁 user.js
@@ -253,51 +253,51 @@ export default class User {
 }
 
 export function sayHi(user) {
-  alert(`Hello, ${user}!`);
+  alert(`Привіт, ${user}!`);
 }
 ```
 
-Here's how to import the default export along with a named one:
+Для імпорту типової сутності та декількох іменованих потрібно:
 
 ```js
 // 📁 main.js
 import {*!*default as User*/!*, sayHi} from './user.js';
 
-new User('John');
+new User('Іван');
 ```
 
-And, finally, if importing everything `*` as an object, then the `default` property is exactly the default export:
+Урешті-решт, якщо імпортувати всі `*` як об'єкт, тоді властивість `default` матиме значення імпорту за замовчуванням:
 
 ```js
 // 📁 main.js
 import * as user from './user.js';
 
-let User = user.default; // the default export
-new User('John');
+let User = user.default; // імпорт за замовчуванням
+new User('Іван');
 ```
 
-### A word against default exports
+### Аргументи проти імпортів за замовчуванням
 
-Named exports are explicit. They exactly name what they import, so we have that information from them; that's a good thing.
+Іменовані імпорти є явними. Нам потрібно точно перелічити все, що імпортуємо; це є перевагою.
 
-Named exports force us to use exactly the right name to import:
+Іменовані експорти змушують нас використовувати точне ім'я сутності для імпорту:
 
 ```js
 import {User} from './user.js';
-// import {MyUser} won't work, the name must be {User}
+// import {MyUser} не спрацює, оскільки ім'я повинно бути {User}
 ```
 
-...While for a default export, we always choose the name when importing:
+...В той час, як для імпорту за замовчуванням нам завжди потрібно обрати ім'я:
 
 ```js
-import User from './user.js'; // works
-import MyUser from './user.js'; // works too
-// could be import Anything... and it'll still work
+import User from './user.js'; // спрацює
+import MyUser from './user.js'; // спрацює теж
+// можна навіть import Anything... і це все одно ще спрацює
 ```
 
-So team members may use different names to import the same thing, and that's not good.
+Таким чином різні члени команд можуть використовувати різні імена для імпорту однакових сутностей і це не дуже добре.
 
-Usually, to avoid that and keep the code consistent, there's a rule that imported variables should correspond to file names, e.g:
+Зазвичай, щоб уникати цього і тримати код узгодженим, існує правило - імпортована змінна повинна мати ім'я, що відповідає імені файлу:
 
 ```js
 import User from './user.js';
