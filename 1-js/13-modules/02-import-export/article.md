@@ -306,25 +306,25 @@ import func from '/path/to/func.js';
 ...
 ```
 
-Still, some teams consider it a serious drawback of default exports. So they prefer to always use named exports. Even if only a single thing is exported, it's still exported under a name, without `default`.
+А втім, деякі команди все ще вважають це серйозним недоліком експортів за замовчуванням. Тому вони надають перевагу використанню іменованих експортів. Навіть якщо експортують одну сутність, її все одно експортують з іменем, без `default`.
 
-That also makes re-export (see below) a little bit easier.
+Це також дозволяє полегшити повторний експорт (наступний розділ).
 
-## Re-export
+## Реекспорт
 
-"Re-export" syntax `export ... from ...` allows to import things and immediately export them (possibly under another name), like this:
+Синтаксис "реекспорту" `export ... from ...` дозволяє одночасно імпортувати сутності та експортувати (можливо під іншими іменем) як тут:
 
 ```js
-export {sayHi} from './say.js'; // re-export sayHi
+export {sayHi} from './say.js'; // реекспорт sayHi
 
-export {default as User} from './user.js'; // re-export default
+export {default as User} from './user.js'; // реекспорт default
 ```
 
-Why would that be needed? Let's see a practical use case.
+Навіщо нам це може знадобитися? Розглянемо практичний способі використання.
 
-Imagine, we're writing a "package": a folder with a lot of modules, with some of the functionality exported outside (tools like NPM allow us to publish and distribute such packages, but we don't have to use them), and many modules are just "helpers", for internal use in other package modules.
+Уявімо, що нам потрібно написати "пакунок": директорію з багатьма модулями, що експортує певний функціонал (інструменти як NPM дозволяють публікувати та розповсюджувати такі пакунки, але ми не зобов'язані їх використовувати). Багато таких пакунків використовуються в ролі допоміжних, для внутрішнього використання всередині інших модулів.
 
-The file structure could be like this:
+Файлова структура може мати такий вигляд:
 ```
 auth/
     index.js
@@ -338,56 +338,56 @@ auth/
         ...
 ```
 
-We'd like to expose the package functionality via a single entry point.
+Для доступу до функціоналу пакунку ззовні ми б хотіли створити єдину точку входу.
 
-In other words, a person who would like to use our package, should import only from the "main file" `auth/index.js`.
+Інакше кажучи, користувачі для використання функціоналу нашого пакунку повинні імпортувати тільки "головний файл" `auth/index.js`.
 
-Like this:
+Наприклад:
 
 ```js
 import {login, logout} from 'auth/index.js'
 ```
 
-The "main file", `auth/index.js` exports all the functionality that we'd like to provide in our package.
+"Головний файл" `auth/index.js` експортує весь функціонал, що ми б хотіли надати з цим пакунком.
 
-The idea is that outsiders, other programmers who use our package, should not meddle with its internal structure, search for files inside our package folder. We export only what's necessary in `auth/index.js` and keep the rest hidden from prying eyes.
+Ідея полягає в тому, щоб інші програмісти, хто буде використовувати наш пакунок, не матимуть змогу втрутитися у внутрішню структуру. Ми експортуємо тільки те, що необхідно з `auth/index.js` та тримаємо решту прихованим від допитливих очей.
 
-As the actual exported functionality is scattered among the package, we can import it into `auth/index.js` and export from it:
+Оскільки, функціональність, до якої ми хочемо надати доступ, може знаходитися в різних частинах пакунку, ми можемо імпортувати її та повторно експортувати в `auth/index.js`:
 
 ```js
 // 📁 auth/index.js
 
-// import login/logout and immediately export them
+// імпортуємо login/logout та одразу експортуємо їх
 import {login, logout} from './helpers.js';
 export {login, logout};
 
-// import default as User and export it
+// імпортуємо User за замовчуванням та експортуємо його
 import User from './user.js';
 export {User};
 ...
 ```
 
-Now users of our package can `import {login} from "auth/index.js"`.
+Тепер користувачі нашого пакунку зможуть виконати `import {login} from "auth/index.js"`.
 
-The syntax `export ... from ...` is just a shorter notation for such import-export:
+Синтаксис `export ... from ...` - просто скорочений запис для імпорту-експорту:
 
 ```js
 // 📁 auth/index.js
-// re-export login/logout
+// реекспорт login/logout
 export {login, logout} from './helpers.js';
 
-// re-export the default export as User
+// реекспорт за замовчуванням під іменем User
 export {default as User} from './user.js';
 ...
 ```
 
-The notable difference of `export ... from` compared to `import/export` is that re-exported modules aren't available in the current file. So inside the above example of `auth/index.js` we can't use re-exported `login/logout` functions.
+Суттєвою різницею між `export ... from` та `import/export` є недоступність реекспортованих модулів всередині поточного файлу. Тому в прикладі вище всередині файлу `auth/index.js` ми не зможемо використати реекспортовані функції `login/logout`.
 
-### Re-exporting the default export
+### Реекспорт експорту за замовчуванням
 
-The default export needs separate handling when re-exporting.
+Експорт за замовчуванням потребує для реекспорту потребує спеціальної обробки.
 
-Let's say we have `user.js` with the `export default class User` and would like to re-export it:
+Скажімо, у нас є `user.js` з якого ми хочемо реекспортувати клас `User`:
 
 ```js
 // 📁 user.js
@@ -396,71 +396,71 @@ export default class User {
 }
 ```
 
-We can come across two problems with it:
+У нас може виникнути дві проблеми:
 
-1. `export User from './user.js'` won't work. That would lead to a syntax error.
+1. `export User from './user.js'` не спрацює. Це призведе до синтаксичної помилки.
 
     To re-export the default export, we have to write `export {default as User}`, as in the example above.
 
-2. `export * from './user.js'` re-exports only named exports, but ignores the default one.
+2. `export * from './user.js'` реекспортує тільки іменовані експорти і проігнорує ті, що за замовчуванням.
 
-    If we'd like to re-export both named and the default export, then two statements are needed:
+    Якщо ми хочемо реекспортувати як іменовані, так і експорти за замовчуванням тоді нам потрібні дві інструкції:
     ```js
-    export * from './user.js'; // to re-export named exports
-    export {default} from './user.js'; // to re-export the default export
+    export * from './user.js'; // для реекспорту іменованих експортів
+    export {default} from './user.js'; // для реекспорту експортів за замовчуванням
     ```
 
-Such oddities of re-exporting a default export are one of the reasons why some developers don't like default exports and prefer named ones.
+Такі дивацтва для реекспорту експортів за замовчуванням є однією з причин чому деякі розробники недолюблюють експорти за замовчуванням та надають перевагу іменованим.
 
-## Summary
+## Підсумки
 
-Here are all types of `export` that we covered in this and previous articles.
+Ось всі типи `export`, що ми розглянули в цій та попередній частинах.
 
-You can check yourself by reading them and recalling what they mean:
+Щоб перевірити себе, ви можете прочитати та згадати, що вони означають:
 
-- Before declaration of a class/function/..:
+- Перед оголошенням класу/функції/..:
   - `export [default] class/function/variable ...`
-- Standalone export:
+- Окремий експорт:
   - `export {x [as y], ...}`.
-- Re-export:
+- Реекспорт:
   - `export {x [as y], ...} from "module"`
-  - `export * from "module"` (doesn't re-export default).
-  - `export {default [as y]} from "module"` (re-export default).
+  - `export * from "module"` (не реекспортує за замовчуванням).
+  - `export {default [as y]} from "module"` (реекспорт за замовчуванням).
 
-Import:
+Імпорт:
 
-- Importing named exports:
+- Імпорт іменованих експортів:
   - `import {x [as y], ...} from "module"`
-- Importing the default export:
+- Імпорт експортів за замовчуванням:
   - `import x from "module"`
   - `import {default as x} from "module"`
-- Import all:
+- Імпортування всього:
   - `import * as obj from "module"`
-- Import the module (its code runs), but do not assign any of its exports to variables:
+- Тільки імпорт модуля (буде виконано його код) без присвоєння в змінну:
   - `import "module"`
 
-We can put `import/export` statements at the top or at the bottom of a script, that doesn't matter.
+Інструкції `import/export` можуть бути розташовані як зверху, так і знизу в скрипті.
 
-So, technically this code is fine:
+Тому, технічно, це правильний код:
 ```js
 sayHi();
 
 // ...
 
-import {sayHi} from './say.js'; // import at the end of the file
+import {sayHi} from './say.js'; // імпорт розташовано в кінці файлу
 ```
 
-In practice imports are usually at the start of the file, but that's only for more convenience.
+На практиці імпорти зазвичай розташовують на початку файлу, але це переважно для зручності.
 
-**Please note that import/export statements don't work if inside `{...}`.**
+**Зверніть увагу, що інструкції імпорту та експорту не спрацюють, якщо розташовані всередині `{...}`.**
 
-A conditional import, like this, won't work:
+Умовний імпорт, як в наступному прикладі, не спрацює:
 ```js
 if (something) {
   import {sayHi} from "./say.js"; // Error: import must be at top level
 }
 ```
 
-...But what if we really need to import something conditionally? Or at the right time? Like, load a module upon request, when it's really needed?
+...Що робити, якщо нам потрібно щось імпортувати за певних умов? Або в певний час? Наприклад, завантажити модуль за запитом, коли він дійсно стане потрібним.
 
-We'll see dynamic imports in the next article.
+Динамічні імпорти буде розглянуто в наступній частині.
